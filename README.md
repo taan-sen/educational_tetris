@@ -1,4 +1,4 @@
-# Funky Play App 🌊
+# Educational Tetris Game for Kids 🌊
 
 A fun and interactive typing game built with Angular where players must type falling characters before they hit the rising water level!
 
