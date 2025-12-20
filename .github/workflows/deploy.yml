@@ -31,20 +31,20 @@ jobs:
         run: npm ci
 
       - name: Build
-        run: npm run build -- --configuration production --base-href "/funky-play-app/"
+        run: npm run build -- --configuration production --base-href "/educational_tetris/"
 
       - name: Detect build output and upload artifact
         run: |
-          if [ -d "dist/funky-play-app/browser" ]; then
-            echo "dist/funky-play-app/browser exists"
+          if [ -d "dist/educational_tetris/browser" ]; then
+            echo "dist/educational_tetris/browser exists"
           else
-            echo "dist/funky-play-app/browser folder not found!" && exit 1
+            echo "dist/educational_tetris/browser folder not found!" && exit 1
           fi
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: dist/funky-play-app/browser
+          path: dist/educational_tetris/browser
 
   deploy:
     environment:
