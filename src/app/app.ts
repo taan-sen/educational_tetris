@@ -46,10 +46,12 @@ export class App implements OnDestroy {
   targetWaterLevel = 10; // Target level for smooth animation
   score = 0;
   charactersPopped = 0; // Track total characters popped
+  dangerLevel = 0; // Track how many characters hit water after 50%
   fallingChars: FallingChar[] = [];
   confettiParticles: ConfettiParticle[] = [];
   splashParticles: SplashParticle[] = [];
   charactersToTop = 10; // Configurable: characters needed to reach 100%
+  fallSpeed = 1; // Configurable: speed multiplier for falling characters
   Math = Math; // Expose Math to template
   private charId = 0;
   private confettiId = 0;
@@ -57,7 +59,7 @@ export class App implements OnDestroy {
   private fallInterval: any;
 
   private characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-  private colors = ['#ff6b6b', '#feca57', '#48dbfb', '#ff9ff3', '#54a0ff', '#5f27cd', '#00d2d3', '#ff9f43'];
+  private colors = ['#ffff00', '#00ff00', '#ff00ff', '#00ffff', '#ffffff', '#ffa500', '#ff1493', '#32cd32', '#ff4500', '#9400d3', '#00ff7f', '#ff6347', '#1e90ff', '#ffd700', '#adff2f', '#ff69b4', '#00bfff', '#ffb347'];
   private fonts = ['Arial', 'Helvetica', 'Georgia', 'Times New Roman', 'Courier New', 'Verdana', 'Comic Sans MS'];
   private weights = ['normal', 'bold', '300', '600', '800'];
 
@@ -74,6 +76,10 @@ export class App implements OnDestroy {
     this.showConfig = !this.showConfig;
   }
 
+  closeConfig() {
+    this.showConfig = false;
+  }
+
   restartGame() {
     this.showWater = false;
     this.showConfig = false;
@@ -81,10 +87,12 @@ export class App implements OnDestroy {
     this.targetWaterLevel = 10; // Reset target level too
     this.score = 0;
     this.charactersPopped = 0; // Reset popped counter
+    this.dangerLevel = 0; // Reset danger level
     this.fallingChars = [];
     this.confettiParticles = []; // Clear confetti
     this.splashParticles = []; // Clear splash particles
     this.charactersToTop = 10; // Reset to default
+    this.fallSpeed = 1; // Reset to default
     this.stopCharacterFall();
   }
 
@@ -140,7 +148,7 @@ export class App implements OnDestroy {
       font: this.fonts[Math.floor(Math.random() * this.fonts.length)],
       size: 50 + Math.random() * 30,
       weight: this.weights[Math.floor(Math.random() * this.weights.length)],
-      speed: 0.421875 + Math.random() * 0.6328125,
+      speed: (0.421875 + Math.random() * 0.6328125) * this.fallSpeed,
       popped: false
     };
     this.fallingChars.push(char);
@@ -170,6 +178,12 @@ export class App implements OnDestroy {
         if (wasAboveWater && char.y >= waterTop && char.speed > 0) {
           char.speed = 0; // Stop at water level
           this.createSplash(char.x + 25, waterTop); // Create splash at water surface
+          
+          // Increase danger level if water is above 50%
+          if (this.waterLevel > 50) {
+            this.dangerLevel++;
+          }
+          
           this.increaseWaterLevel();
           characterCrossedWater = true;
         }
@@ -314,6 +328,43 @@ export class App implements OnDestroy {
 
   trackSplash(index: number, splash: SplashParticle): number {
     return splash.id;
+  }
+
+  getDangerBackground(): string {
+    if (!this.showWater) return '';
+    if (this.waterLevel <= 50) return '';
+    
+    // Calculate intensity based on danger level (0 to 1)
+    // Cap at 8 drownings for max intensity
+    const intensity = Math.min(this.dangerLevel / 8, 1);
+    
+    // Interpolate between light red and dark red based on intensity
+    const color1 = this.interpolateColor('#3d1a1a', '#1a0000', intensity); // Dark red
+    const color2 = this.interpolateColor('#5c2828', '#330000', intensity); // Deep red
+    const color3 = this.interpolateColor('#8b3a3a', '#660000', intensity); // Red-brown
+    const color4 = this.interpolateColor('#d65555', '#990000', intensity); // Bright red
+    const color5 = this.interpolateColor('#ff7777', '#cc0000', intensity); // Light red
+    
+    return `linear-gradient(to bottom, ${color1} 0%, ${color2} 25%, ${color3} 60%, ${color4} 80%, ${color5} 100%)`;
+  }
+
+  private interpolateColor(color1: string, color2: string, factor: number): string {
+    const c1 = parseInt(color1.slice(1), 16);
+    const c2 = parseInt(color2.slice(1), 16);
+    
+    const r1 = (c1 >> 16) & 0xff;
+    const g1 = (c1 >> 8) & 0xff;
+    const b1 = c1 & 0xff;
+    
+    const r2 = (c2 >> 16) & 0xff;
+    const g2 = (c2 >> 8) & 0xff;
+    const b2 = c2 & 0xff;
+    
+    const r = Math.round(r1 + (r2 - r1) * factor);
+    const g = Math.round(g1 + (g2 - g1) * factor);
+    const b = Math.round(b1 + (b2 - b1) * factor);
+    
+    return `#${((r << 16) | (g << 8) | b).toString(16).padStart(6, '0')}`;
   }
 
   ngOnDestroy() {

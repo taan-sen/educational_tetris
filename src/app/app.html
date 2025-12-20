@@ -1,4 +1,4 @@
-<div class="container" [class.game-started]="showWater">
+<div class="container" [class.game-started]="showWater" [class.danger-mode]="showWater && waterLevel > 50" [style.background]="getDangerBackground()">
   <!-- Evening sky clouds -->
   <div class="sky-clouds" *ngIf="showWater">
     <div class="cloud cloud-1"></div>
@@ -124,18 +124,26 @@
   </div>
 
   <div class="config-popup" *ngIf="showWater" [class.open]="showConfig">
-    <h3>Configuration</h3>
-    <div class="config-item">
-      <label for="waterLevel">Water Level (%) - Current: {{waterLevel}}vh</label>
-      <input type="number" id="waterLevel" [(ngModel)]="waterLevel" min="5" max="100" />
-      <input type="range" [(ngModel)]="waterLevel" min="5" max="100" />
+    <div class="config-backdrop" *ngIf="showConfig" (click)="closeConfig()"></div>
+    <div class="config-content" *ngIf="showConfig">
+      <h3>Configuration</h3>
+      <div class="config-item">
+        <label for="waterLevel">Water Level (%) - Current: {{waterLevel}}vh</label>
+        <input type="number" id="waterLevel" [(ngModel)]="waterLevel" min="5" max="100" />
+        <input type="range" [(ngModel)]="waterLevel" min="5" max="100" />
+      </div>
+      <div class="config-item">
+        <label for="charactersToTop">Characters to reach 100%</label>
+        <input type="number" id="charactersToTop" [(ngModel)]="charactersToTop" min="2" max="25" />
+        <input type="range" [(ngModel)]="charactersToTop" min="2" max="25" />
+      </div>
+      <div class="config-item">
+        <label for="fallSpeed">Fall Speed ({{fallSpeed}}x)</label>
+        <input type="number" id="fallSpeed" [(ngModel)]="fallSpeed" min="0.2" max="3" step="0.1" />
+        <input type="range" [(ngModel)]="fallSpeed" min="0.2" max="3" step="0.1" />
+      </div>
+      <button class="close-btn" (click)="closeConfig()">Close</button>
     </div>
-    <div class="config-item">
-      <label for="charactersToTop">Characters to reach 100%</label>
-      <input type="number" id="charactersToTop" [(ngModel)]="charactersToTop" min="2" max="25" />
-      <input type="range" [(ngModel)]="charactersToTop" min="2" max="25" />
-    </div>
-    <button class="close-btn" (click)="toggleConfig()">Close</button>
   </div>
 
   <div class="game-over-popup" *ngIf="waterLevel >= 100" [class.show]="waterLevel >= 100">

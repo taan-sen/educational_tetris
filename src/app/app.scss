@@ -20,6 +20,17 @@
       #ff7e5f 80%,    /* Orange */
       #feb47b 100%    /* Peach */
     );
+    transition: background 0.8s ease-in-out;
+    
+    &.danger-mode {
+      background: linear-gradient(to bottom,
+        #2d0a0a 0%,     /* Dark red */
+        #4a0e0e 25%,    /* Deep red */
+        #661a1a 60%,    /* Red-brown */
+        #cc3333 80%,    /* Bright red */
+        #ff4444 100%    /* Light red */
+      );
+    }
   }
 }
 
@@ -427,6 +438,33 @@
 }
 
 .config-popup {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 10;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+  
+  &.open {
+    opacity: 1;
+    visibility: visible;
+  }
+}
+
+.config-backdrop {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.3);
+  cursor: pointer;
+}
+
+.config-content {
   position: absolute;
   bottom: 80px;
   left: 20px;
@@ -435,24 +473,19 @@
   border-radius: 15px;
   backdrop-filter: blur(20px);
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-  transform: translateY(20px);
-  opacity: 0;
-  visibility: hidden;
-  transition: all 0.3s ease;
   min-width: 250px;
-  z-index: 10;
-  
-  &.open {
-    transform: translateY(0);
-    opacity: 1;
-    visibility: visible;
-  }
+  transform: translateY(20px);
+  transition: transform 0.3s ease;
   
   h3 {
     margin: 0 0 15px 0;
     color: #333;
     font-size: 18px;
   }
+}
+
+.config-popup.open .config-content {
+  transform: translateY(0);
 }
 
 .config-item {
@@ -684,7 +717,11 @@
 .falling-char {
   position: absolute;
   user-select: none;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+  text-shadow: 
+    2px 2px 4px rgba(0, 0, 0, 0.8),
+    -1px -1px 2px rgba(0, 0, 0, 0.6),
+    1px -1px 2px rgba(0, 0, 0, 0.6),
+    -1px 1px 2px rgba(0, 0, 0, 0.6);
   transition: all 0.3s ease;
   
   &.popped {
