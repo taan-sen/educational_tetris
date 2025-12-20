@@ -23,6 +23,16 @@ interface ConfettiParticle {
   delay: number;
 }
 
+interface SplashParticle {
+  id: number;
+  x: number;
+  y: number;
+  velocityX: number;
+  velocityY: number;
+  color: string;
+  size: number;
+}
+
 @Component({
   selector: 'app-root',
   imports: [FormsModule, CommonModule],
@@ -38,6 +48,7 @@ export class App implements OnDestroy {
   charactersPopped = 0; // Track total characters popped
   fallingChars: FallingChar[] = [];
   confettiParticles: ConfettiParticle[] = [];
+  splashParticles: SplashParticle[] = [];
   charactersToTop = 10; // Configurable: characters needed to reach 100%
   Math = Math; // Expose Math to template
   private charId = 0;
@@ -72,6 +83,7 @@ export class App implements OnDestroy {
     this.charactersPopped = 0; // Reset popped counter
     this.fallingChars = [];
     this.confettiParticles = []; // Clear confetti
+    this.splashParticles = []; // Clear splash particles
     this.charactersToTop = 10; // Reset to default
     this.stopCharacterFall();
   }
@@ -157,6 +169,7 @@ export class App implements OnDestroy {
         // Check if character just crossed into water
         if (wasAboveWater && char.y >= waterTop && char.speed > 0) {
           char.speed = 0; // Stop at water level
+          this.createSplash(char.x + 25, waterTop); // Create splash at water surface
           this.increaseWaterLevel();
           characterCrossedWater = true;
         }
@@ -180,6 +193,19 @@ export class App implements OnDestroy {
       Date.now() - confetti.id < 1000 // Remove after 1 second
     );
     
+    // Update splash particles
+    this.splashParticles.forEach(splash => {
+      splash.x += splash.velocityX;
+      splash.y += splash.velocityY;
+      splash.velocityY += 0.4; // Stronger gravity
+      splash.size *= 0.96; // Faster shrinking for dramatic effect
+    });
+    
+    // Clean up old splash particles
+    this.splashParticles = this.splashParticles.filter(splash => 
+      splash.y < window.innerHeight + 50 && splash.size > 1
+    );
+    
     // Force change detection
     this.cdr.markForCheck();
     this.cdr.detectChanges();
@@ -198,6 +224,44 @@ export class App implements OnDestroy {
         delay: i * 50 // Stagger the animations
       };
       this.confettiParticles.push(confetti);
+    }
+  }
+
+  private createSplash(x: number, y: number) {
+    const splashColors = ['rgba(135,206,250,0.9)', 'rgba(176,224,230,1)', 'rgba(255,255,255,0.9)', 'rgba(100,200,255,0.8)'];
+    
+    // Create 16 splash particles for more intensity
+    for (let i = 0; i < 16; i++) {
+      const angle = (i / 16) * Math.PI * 2;
+      const speed = 4 + Math.random() * 6; // Increased speed
+      
+      const splash: SplashParticle = {
+        id: Date.now() + i,
+        x: x,
+        y: y,
+        velocityX: Math.cos(angle) * speed,
+        velocityY: Math.sin(angle) * speed - 4, // More upward velocity
+        color: splashColors[Math.floor(Math.random() * splashColors.length)],
+        size: 6 + Math.random() * 12 // Larger particles
+      };
+      this.splashParticles.push(splash);
+    }
+    
+    // Add additional large droplets
+    for (let i = 0; i < 6; i++) {
+      const angle = Math.random() * Math.PI * 2;
+      const speed = 2 + Math.random() * 4;
+      
+      const splash: SplashParticle = {
+        id: Date.now() + i + 16,
+        x: x + (Math.random() - 0.5) * 40,
+        y: y,
+        velocityX: Math.cos(angle) * speed,
+        velocityY: Math.sin(angle) * speed - 6, // High arc
+        color: 'rgba(255,255,255,0.95)',
+        size: 12 + Math.random() * 8 // Large droplets
+      };
+      this.splashParticles.push(splash);
     }
   }
 
@@ -246,6 +310,10 @@ export class App implements OnDestroy {
 
   trackConfetti(index: number, confetti: ConfettiParticle): number {
     return confetti.id;
+  }
+
+  trackSplash(index: number, splash: SplashParticle): number {
+    return splash.id;
   }
 
   ngOnDestroy() {
