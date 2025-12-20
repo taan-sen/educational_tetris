@@ -1,0 +1,125 @@
+<div class="container" [class.game-started]="showWater">
+  <button class="play-button" *ngIf="!showWater" (click)="startWater()">
+    <div class="button-corner corner-tl">
+      <svg class="corner-icon" viewBox="0 0 50 50" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="25" cy="25" r="8" fill="currentColor"/>
+        <circle cx="25" cy="25" r="15" fill="none" stroke="currentColor" stroke-width="2"/>
+      </svg>
+    </div>
+    <div class="button-corner corner-tr">
+      <svg class="corner-icon" viewBox="0 0 50 50" xmlns="http://www.w3.org/2000/svg">
+        <path d="M15,25 L25,15 L35,25 L25,35 Z" fill="currentColor"/>
+      </svg>
+    </div>
+    <div class="button-corner corner-bl">
+      <svg class="corner-icon" viewBox="0 0 50 50" xmlns="http://www.w3.org/2000/svg">
+        <rect x="15" y="20" width="20" height="10" rx="5" fill="currentColor"/>
+      </svg>
+    </div>
+    <div class="button-corner corner-br">
+      <svg class="corner-icon" viewBox="0 0 50 50" xmlns="http://www.w3.org/2000/svg">
+        <polygon points="20,15 30,15 35,25 30,35 20,35 15,25" fill="currentColor"/>
+      </svg>
+    </div>
+    <div class="button-center">
+      <svg class="play-icon" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+        <polygon points="30,20 30,80 80,50" fill="currentColor"/>
+      </svg>
+      <span class="play-text">PLAY</span>
+    </div>
+  </button>
+
+  <div class="water-container" *ngIf="showWater" [style.height]="waterLevel + 'vh'" [style.bottom]="'0'">
+    <svg class="water-wave" viewBox="0 0 1200 120" preserveAspectRatio="none">
+      <path d="M0,6 C100,0 200,12 300,6 C400,0 500,12 600,6 C700,0 800,12 900,6 C1000,0 1100,12 1200,6 L1200,120 L0,120 Z" fill="rgba(64, 224, 208, 0.8)">
+        <animate attributeName="d" 
+          dur="4s" 
+          repeatCount="indefinite"
+          values="M0,6 C100,0 200,12 300,6 C400,0 500,12 600,6 C700,0 800,12 900,6 C1000,0 1100,12 1200,6 L1200,120 L0,120 Z;
+                  M0,12 C100,6 200,18 300,12 C400,6 500,18 600,12 C700,6 800,18 900,12 C1000,6 1100,18 1200,12 L1200,120 L0,120 Z;
+                  M0,0 C100,12 200,0 300,12 C400,0 500,12 600,0 C700,12 800,0 900,12 C1000,0 1100,12 1200,0 L1200,120 L0,120 Z;
+                  M0,6 C100,0 200,12 300,6 C400,0 500,12 600,6 C700,0 800,12 900,6 C1000,0 1100,12 1200,6 L1200,120 L0,120 Z"/>
+      </path>
+    </svg>
+    <svg class="water-wave wave2" viewBox="0 0 1200 120" preserveAspectRatio="none">
+      <path d="M0,12 C150,6 250,18 400,10 C550,6 650,18 800,10 C950,6 1050,18 1200,10 L1200,120 L0,120 Z" fill="rgba(72, 219, 251, 0.6)">
+        <animate attributeName="d" 
+          dur="3.5s" 
+          repeatCount="indefinite"
+          values="M0,12 C150,6 250,18 400,10 C550,6 650,18 800,10 C950,6 1050,18 1200,10 L1200,120 L0,120 Z;
+                  M0,6 C150,18 250,0 400,14 C550,18 650,0 800,14 C950,18 1050,0 1200,14 L1200,120 L0,120 Z;
+                  M0,10 C150,0 250,12 400,6 C550,22 650,6 800,12 C950,0 1050,12 1200,6 L1200,120 L0,120 Z;
+                  M0,12 C150,6 250,18 400,10 C550,6 650,18 800,10 C950,6 1050,18 1200,10 L1200,120 L0,120 Z"/>
+      </path>
+    </svg>
+    <svg class="water-wave wave3" viewBox="0 0 1200 120" preserveAspectRatio="none">
+      <path d="M0,10 C200,16 300,4 500,10 C700,16 800,4 1000,10 C1100,16 1150,4 1200,10 L1200,120 L0,120 Z" fill="rgba(100, 200, 255, 0.4)">
+        <animate attributeName="d" 
+          dur="5s" 
+          repeatCount="indefinite"
+          values="M0,10 C200,16 300,4 500,10 C700,16 800,4 1000,10 C1100,16 1150,4 1200,10 L1200,120 L0,120 Z;
+                  M0,12 C200,6 300,18 500,12 C700,6 800,18 1000,12 C1100,6 1150,18 1200,12 L1200,120 L0,120 Z;
+                  M0,4 C200,10 300,4 500,10 C700,16 800,4 1000,10 C1100,16 1150,4 1200,10 L1200,120 L0,120 Z;
+                  M0,10 C200,16 300,4 500,10 C700,16 800,4 1000,10 C1100,16 1150,4 1200,10 L1200,120 L0,120 Z"/>
+      </path>
+    </svg>
+  </div>
+
+  <button class="config-link" *ngIf="showWater" (click)="toggleConfig()">⚙️ Configure</button>
+
+  <div class="score-card" *ngIf="showWater">
+    <div class="score-header">SCORE</div>
+    <div class="score-number">{{score}}</div>
+  </div>
+
+  <div class="config-popup" *ngIf="showWater" [class.open]="showConfig">
+    <h3>Configuration</h3>
+    <div class="config-item">
+      <label for="waterLevel">Water Level (%) - Current: {{waterLevel}}vh</label>
+      <input type="number" id="waterLevel" [(ngModel)]="waterLevel" min="5" max="100" />
+      <input type="range" [(ngModel)]="waterLevel" min="5" max="100" />
+    </div>
+    <div class="config-item">
+      <label for="charactersToTop">Characters to reach 100%</label>
+      <input type="number" id="charactersToTop" [(ngModel)]="charactersToTop" min="2" max="25" />
+      <input type="range" [(ngModel)]="charactersToTop" min="2" max="25" />
+    </div>
+    <button class="close-btn" (click)="toggleConfig()">Close</button>
+  </div>
+
+  <div class="game-over-popup" *ngIf="waterLevel >= 100" [class.show]="waterLevel >= 100">
+    <div class="game-over-content">
+      <h1 class="game-over-title">🌊 GAME OVER! 🌊</h1>
+      <div class="score-container">
+        <span class="score-label">Final Score:</span>
+        <span class="score-value">{{score}}</span>
+      </div>
+      <div class="game-over-message">The water has flooded everything!</div>
+      <button class="restart-btn" (click)="restartGame()">🎮 Play Again</button>
+    </div>
+  </div>
+
+  <div class="falling-chars" *ngIf="showWater">
+    <div 
+      *ngFor="let char of fallingChars; trackBy: trackChar" 
+      class="falling-char"
+      [style.left.px]="char.x"
+      [style.top.px]="char.y"
+      [style.color]="char.color"
+      [style.font-family]="char.font"
+      [style.font-size.px]="char.size"
+      [style.font-weight]="char.weight"
+      [class.popped]="char.popped">
+      {{char.character}}
+    </div>
+    
+    <div 
+      *ngFor="let confetti of confettiParticles; trackBy: trackConfetti"
+      class="confetti-particle"
+      [style.left.px]="confetti.x"
+      [style.top.px]="confetti.y"
+      [style.background-color]="confetti.color"
+      [style.animation-delay.ms]="confetti.delay">
+    </div>
+  </div>
+</div>
