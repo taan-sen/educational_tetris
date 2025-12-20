@@ -1,4 +1,4 @@
-# Educational Tetris Game for Kids 🌊
+# Educational Tetris 🌊
 
 A fun and interactive typing game built with Angular where players must type falling characters before they hit the rising water level!
 
