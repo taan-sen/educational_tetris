@@ -36,7 +36,7 @@ Access the configuration popup via the "⚙️ Configure" button:
 1. Clone the repository
 ```bash
 git clone <repository-url>
-cd funky-play-app
+cd educational_tetris
 ```
 
 2. Install dependencies
@@ -82,7 +82,7 @@ npm start
 - Characters fall at varying speeds
 - Water level increases when characters hit the surface
 - All falling characters disappear when one hits the water
-- Maximum of 3 characters can spawn simultaneously
+- A maximum of 3 characters can spawn simultaneously
 - Game automatically stops spawning when water reaches 100%
 
 ## 🔧 Development
