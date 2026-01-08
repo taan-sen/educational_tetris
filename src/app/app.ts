@@ -52,6 +52,7 @@ export class App implements OnDestroy {
   splashParticles: SplashParticle[] = [];
   charactersToTop = 10; // Configurable: characters needed to reach 100%
   fallSpeed = 1; // Configurable: speed multiplier for falling characters
+  maxFallingChars = 5; // Configurable: maximum characters falling at once
   Math = Math; // Expose Math to template
   private charId = 0;
   private confettiId = 0;
@@ -93,6 +94,7 @@ export class App implements OnDestroy {
     this.splashParticles = []; // Clear splash particles
     this.charactersToTop = 10; // Reset to default
     this.fallSpeed = 1; // Reset to default
+    this.maxFallingChars = 5; // Reset to default
     this.stopCharacterFall();
   }
 
@@ -103,20 +105,24 @@ export class App implements OnDestroy {
     this.spawnCharacter();
     
     this.gameInterval = setInterval(() => {
-      // Spawn multiple characters based on difficulty level, max 3
-      const spawnCount = Math.min(3, Math.floor(this.charactersPopped / 10) + 1);
-      for (let i = 0; i < spawnCount; i++) {
+      // Count currently falling characters (not popped and still moving)
+      const currentFallingCount = this.fallingChars.filter(char => !char.popped && char.speed > 0).length;
+      
+      // Spawn multiple characters based on difficulty level, max 3, but respect maxFallingChars limit
+      const desiredSpawnCount = Math.min(3, Math.floor(this.charactersPopped / 10) + 1);
+      const availableSlots = this.maxFallingChars - currentFallingCount;
+      const actualSpawnCount = Math.min(desiredSpawnCount, availableSlots);
+      
+      for (let i = 0; i < actualSpawnCount; i++) {
         setTimeout(() => this.spawnCharacter(), i * 200); // Stagger spawns by 200ms
       }
-      // console.log('Spawned characters:', spawnCount, 'total:', this.fallingChars.length);
+      // console.log('Spawned characters:', actualSpawnCount, 'falling:', currentFallingCount, 'total:', this.fallingChars.length);
     }, 2000);
 
-    // Use requestAnimationFrame instead of setInterval
-    const animate = () => {
+    // Use setInterval for reliable animation even when tab is not in focus
+    this.fallInterval = setInterval(() => {
       this.updateCharacters();
-      this.fallInterval = requestAnimationFrame(animate);
-    };
-    animate();
+    }, 16); // ~60fps (1000ms / 60fps = 16.67ms)
   }
 
   private increaseSpawnRate() {
@@ -135,7 +141,7 @@ export class App implements OnDestroy {
 
   private stopCharacterFall() {
     if (this.gameInterval) clearInterval(this.gameInterval);
-    if (this.fallInterval) cancelAnimationFrame(this.fallInterval);
+    if (this.fallInterval) clearInterval(this.fallInterval);
   }
 
   private spawnCharacter() {
@@ -290,7 +296,7 @@ export class App implements OnDestroy {
     
     const pressedKey = event.key.toLowerCase();
     const matchingChar = this.fallingChars.find(char => 
-      !char.popped && char.character.toLowerCase() === pressedKey
+      !char.popped && char.speed > 0 && char.character.toLowerCase() === pressedKey
     );
 
     if (matchingChar) {
