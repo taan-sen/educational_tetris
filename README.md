@@ -2,6 +2,12 @@
 
 A fun and interactive typing game built with Angular where players must type falling characters before they hit the rising water level!
 
+## 🎮 Try It Live!
+
+**🚀 [Play Educational Tetris Now!](https://taan-sen.github.io/educational_tetris/) 🚀**
+
+---
+
 ## 🎮 Game Features
 
 - **Falling Characters**: Random alphanumeric characters fall from the top with different fonts, colors, and sizes
@@ -10,6 +16,8 @@ A fun and interactive typing game built with Angular where players must type fal
 - **Progressive Difficulty**: More characters spawn as you progress (max 3 at once)
 - **Score System**: Earn 10 points for each character you type correctly
 - **Game Over**: When water reaches 100% of the screen
+- **Smart Character Limits**: Configurable maximum falling characters to control difficulty
+- **Drowned Character Protection**: Characters that reach water level cannot be typed anymore
 
 ## 🎯 How to Play
 
@@ -24,6 +32,8 @@ A fun and interactive typing game built with Angular where players must type fal
 Access the configuration popup via the "⚙️ Configure" button:
 - **Water Level**: Manually adjust current water level (5-100%)
 - **Characters to Top**: Set how many characters need to hit water to reach 100% (2-25)
+- **Fall Speed**: Adjust how fast characters fall (0.2x - 3x speed multiplier)
+- **Max Falling Characters**: Control maximum number of characters falling simultaneously (1-10, default: 5)
 
 ## 🚀 Getting Started
 
@@ -82,7 +92,8 @@ npm start
 - Characters fall at varying speeds
 - Water level increases when characters hit the surface
 - All falling characters disappear when one hits the water
-- A maximum of 3 characters can spawn simultaneously
+- **Drowned characters cannot be typed** - once a character reaches the water level, it stays there even if its key is pressed
+- **Maximum falling characters limit** - configurable limit (default: 5) prevents too many characters from spawning simultaneously
 - Game automatically stops spawning when water reaches 100%
 
 ## 🔧 Development
